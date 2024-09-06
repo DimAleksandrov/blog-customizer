@@ -40,23 +40,6 @@ export const ArticleParamsForm = ({
 
 	const sidebarRef = useRef<HTMLDivElement>(null);
 
-	// Эффект для отслеживания внешних кликов, только когда меню открыто
-	useEffect(() => {
-		if (isMenuOpen) {
-		  const closeMenu = (event: MouseEvent) => {
-			if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
-			  setIsMenuOpen(true);
-			}
-		  };
-
-		  document.addEventListener('click', closeMenu);
-		  // Очистка события при размонтировании компонента или когда меню закрывается
-		  return () => {
-			document.removeEventListener('click', closeMenu);
-		  };
-		}
-	  }, [isMenuOpen, sidebarRef, setIsMenuOpen]);
-
 	useOutsideClickClose({
 		isOpen: isMenuOpen,
 		rootRef: sidebarRef,

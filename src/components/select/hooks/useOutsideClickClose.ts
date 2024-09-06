@@ -14,18 +14,21 @@ export const useOutsideClickClose = ({
 	onChange,
 }: UseOutsideClickClose) => {
 	useEffect(() => {
-		const handleClick = (event: MouseEvent) => {
-			const { target } = event;
-			if (target instanceof Node && !rootRef.current?.contains(target)) {
-				isOpen && onClose?.();
-				onChange?.(false);
-			}
-		};
+		 if(!isOpen) {
+			const handleClick = (event: MouseEvent) => {
+				const { target } = event;
+				if (target instanceof Node && !rootRef.current?.contains(target)) {
+					isOpen && onClose?.();
+					onChange?.(false);
+				}
+			};
 
-		window.addEventListener('mousedown', handleClick);
-
-		return () => {
-			window.removeEventListener('mousedown', handleClick);
-		};
+			window.addEventListener('mousedown', handleClick);
+            console.log('+');
+			return () => {
+				window.removeEventListener('mousedown', handleClick);
+				console.log('-')
+			};
+		 }
 	}, [onClose, onChange, isOpen]);
 };
