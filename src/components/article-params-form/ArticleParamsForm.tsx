@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import styles from './ArticleParamsForm.module.scss';
-import { FormEvent, useRef, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useOutsideClickClose } from '../select/hooks/useOutsideClickClose';
 
 import {
@@ -34,16 +34,33 @@ export const ArticleParamsForm = ({
 		overflow: 'hidden',
 	};
 
-	const [isOpen, setIsOpen] = useState<boolean>(false);
+	const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 	const [formState, setFormState] =
 		useState<ArticleStateType>(currentArticleState);
 
 	const sidebarRef = useRef<HTMLDivElement>(null);
 
+	// Эффект для отслеживания внешних кликов, только когда меню открыто
+	useEffect(() => {
+		if (isMenuOpen) {
+		  const closeMenu = (event: MouseEvent) => {
+			if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+			  setIsMenuOpen(true);
+			}
+		  };
+
+		  document.addEventListener('click', closeMenu);
+		  // Очистка события при размонтировании компонента или когда меню закрывается
+		  return () => {
+			document.removeEventListener('click', closeMenu);
+		  };
+		}
+	  }, [isMenuOpen, sidebarRef, setIsMenuOpen]);
+
 	useOutsideClickClose({
-		isOpen,
+		isOpen: isMenuOpen,
 		rootRef: sidebarRef,
-		onChange: setIsOpen,
+		onChange: setIsMenuOpen,
 		onClose: () => console.log('Sidebar closed'),
 	});
 
@@ -64,11 +81,11 @@ export const ArticleParamsForm = ({
 
 	return (
 		<>
-			<ArrowButton isOpened={isOpen} onClick={() => setIsOpen(!isOpen)} />
+			<ArrowButton isOpened={isMenuOpen} onClick={() => setIsMenuOpen(!isMenuOpen)} />
 			<aside
 				style={styleForm}
 				ref={sidebarRef}
-				className={clsx(styles.container, isOpen && styles.container_open)}>
+				className={clsx(styles.container, isMenuOpen && styles.container_open)}>
 				<form
 					onSubmit={handleSubmit}
 					onReset={handleReset}
