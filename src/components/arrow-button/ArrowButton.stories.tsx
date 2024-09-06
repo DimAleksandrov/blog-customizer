@@ -13,7 +13,12 @@ export const ArrowButtonStory: Story = {
 	render: () => {
 		return (
 			<>
-				<ArrowButton />
+				<ArrowButton
+					isOpened={true}
+					onClick={function (): void {
+						throw new Error('Function not implemented.');
+					}}
+				/>
 			</>
 		);
 	},
